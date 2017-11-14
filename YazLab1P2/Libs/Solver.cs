@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Forms;
 using YazLab1P2.Models;
 
 namespace YazLab1P2.Libs
 {
     public class Solver
     {
-        public void CalculatePossibility(Sudoku sudoku, int sudokuIndex)
+        public List<int> CalculatePossibility(Sudoku sudoku, int cellIndex)
         {
-            if (sudoku.cellList[sudokuIndex].value == 0)
+            List<int> possibilities = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            if (sudoku.cellList[cellIndex].value == 0)
             {
-                List<int> allPossibilities = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-                
-                int col = sudoku.cellList[sudokuIndex].coordinate.col;
-                int row = sudoku.cellList[sudokuIndex].coordinate.row;
-                int box = sudoku.cellList[sudokuIndex].coordinate.box;
+                int col = sudoku.cellList[cellIndex].coordinate.col;
+                int row = sudoku.cellList[cellIndex].coordinate.row;
+                int box = sudoku.cellList[cellIndex].coordinate.box;
 
                 List<int> colValues = sudoku.GetCol(col);
                 List<int> rowValues = sudoku.GetRow(row);
@@ -21,99 +23,47 @@ namespace YazLab1P2.Libs
 
                 foreach (var value in colValues)
                 {
-                    allPossibilities.Remove(value);
+                    possibilities.Remove(value);
                 }
 
                 foreach (var value in rowValues)
                 {
-                    allPossibilities.Remove(value);
+                    possibilities.Remove(value);
                 }
 
                 foreach (var value in boxValues)
                 {
-                    allPossibilities.Remove(value);
-                }
-            }
-        }
-
-        public void Task(Sudoku sudoku)
-        {
-            for (int i = 0; i < sudoku.cellList.Count; i++)
-            {
-                if (sudoku.cellList[i].value == 0)
-                {
-                    CalculatePossibility(sudoku, i);
-
-                    i = -1;
-                }
-            }
-        }
-
-        public int[,] sudoku = new int[9, 9];
-        
-        public bool Solve(int[,] sudoku1)
-        {
-            for(int i = 0; i < 9; i++)
-            {
-                for(int j = 0; j < 9; j++)
-                {
-                    sudoku[i, j] = sudoku1[i, j];
-
-                    //hucreIhtimalleri = new Dictionary<Koordinat, int[]>();
-
-                    //Koordinat koordinat1 = new Koordinat { row = 1, col = 1, box = 1 };
-                    //int[] ihtimal1 = new int[] { 1, 2, 3, 4, 6, };
-
-                    //hucreIhtimalleri.Add(koordinat1, ihtimal1);
-                }
-            }
-           
-            return false;
-        }
-        private bool UsedInRow(int[,] sudoku, int row, int digit)
-        {
-            bool result = false;
-
-            for (int digitIndex = 0; digitIndex < 9; digitIndex++)
-            {
-                if (sudoku[row - 1, digitIndex] == digit)
-                {
-                    result = true;
+                    possibilities.Remove(value);
                 }
             }
 
-            return result;
+            return possibilities;
         }
-        private bool UsedInCol(int[,] sudoku, int col, int digit)
+
+        public Sudoku Solve(Sudoku sudoku)
         {
-            bool result = false;
+            Stopwatch watch = Stopwatch.StartNew();
 
-            for (int digitIndex = 0; digitIndex < 9; digitIndex++)
+            for (int cellIndex = 0; cellIndex < sudoku.cellList.Count; cellIndex++)
             {
-                if (sudoku[digitIndex, col - 1] == digit)
+                if (sudoku.cellList[cellIndex].value == 0)
                 {
-                    result = true;
-                }
-            }
+                    List<int> possibilities = CalculatePossibility(sudoku, cellIndex);
 
-            return result;
-        }
-        private bool UsedInBox(int[,] sudoku, int boxIndexX, int boxIndexY, int digit)
-        {
-            bool sonuc = false;
-
-            for (int i = boxIndexX; i < (boxIndexX + 3); i++)
-            {
-                for (int j = boxIndexY; j < (boxIndexY + 3); j++)
-                {
-                    if (sudoku[i, j] == digit)
+                    if (possibilities.Count == 1)
                     {
-                        return true;
+                        sudoku.cellList[cellIndex].value = possibilities[0];
+
+                        cellIndex = -1;
                     }
                 }
             }
 
-            return sonuc;
+            watch.Stop();
+            long elapsedMs = watch.ElapsedMilliseconds;
+            MessageBox.Show("Çalışma süresi:" + elapsedMs);
+
+            return sudoku;
         }
     }
 }
