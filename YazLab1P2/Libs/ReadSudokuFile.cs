@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static YazLab1P2.Libs.Solver;
+using YazLab1P2.Models;
 
 namespace YazLab1P2.Libs
 {
     public class ReadSudokuFile
     {
-        public  int[,] Read(string path)
+        public Sudoku Read(string path)
         {
-            Sudoku sudoku2 = new Sudoku();
-            int[,] sudoku = new int[9, 9];
+            Sudoku sudoku = new Sudoku();
             
             StreamReader streamReader = new StreamReader(path);
 
@@ -87,9 +80,7 @@ namespace YazLab1P2.Libs
                         coordinate = new Coordinate { row = row, col = col, box = box }
                     };
 
-                    sudoku2.cellList.Add(cell);
-
-                    sudoku[row, col] = Convert.ToInt32(digit[k].ToString());
+                    sudoku.cellList.Add(cell);
                     col++;
                 }
             }

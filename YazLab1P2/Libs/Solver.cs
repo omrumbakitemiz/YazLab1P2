@@ -1,75 +1,10 @@
 ﻿using System.Collections.Generic;
+using YazLab1P2.Models;
 
 namespace YazLab1P2.Libs
 {
     public class Solver
     {
-        public struct Coordinate
-        {
-            public int col, row, box;
-        }
-
-        public class Cell
-        {
-            public Coordinate coordinate;
-            public int value;
-        }
-
-        public class Sudoku
-        {
-            public Sudoku()
-            {
-
-            }
-
-            public List<Cell> cellList = new List<Cell>();
-
-            public List<int> GetCol(int colNumber)
-            {
-                List<int> values = new List<int>();
-
-                foreach (var cell in cellList)
-                {
-                    if (cell.coordinate.col == colNumber)
-                    {
-                        values.Add(cell.value);
-                    }
-                }
-
-                return values;
-            }
-
-            public List<int> GetRow(int rowNumber)
-            {
-                List<int> values = new List<int>();
-
-                foreach (var cell in cellList)
-                {
-                    if (cell.coordinate.row == rowNumber)
-                    {
-                        values.Add(cell.value);
-                    }
-                }
-
-                return values;
-            }
-
-            public List<int> GetBox(int boxNumber)
-            {
-                List<int> values = new List<int>();
-
-                foreach (var cell in cellList)
-                {
-                    if (cell.coordinate.box == boxNumber)
-                    {
-                        values.Add(cell.value);
-                    }
-                }
-
-                return values;
-            }
-        }
-
         public void CalculatePossibility(Sudoku sudoku, int sudokuIndex)
         {
             if (sudoku.cellList[sudokuIndex].value == 0)
